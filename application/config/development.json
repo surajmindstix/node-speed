@@ -18,7 +18,7 @@
 			},
 			{
 			  "type": "dateFile",
-			  "filename": "./var/default/logs/application",
+			  "filename": "logs/application",
 			  "pattern": "-yyyy-MM-dd.log",
 			  "alwaysIncludePattern": true
 			}

@@ -1,7 +1,7 @@
 {
 	"interceptors": [
 		{
-			"requestUri": "/v1/user/*",
+			"requestUri": "/v1/country/*",
 			"httpMethod": "get",
 			"handler": "/MyInterceptor.cacheInterception"
 		}	

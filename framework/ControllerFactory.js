@@ -62,8 +62,7 @@ function initialize(controllerPath, routeDefinitionPath) {
 		// Instantiate controller module
 		logger.info("Initializing Controller: [%s] %s", relativeControllerName, controllerFile);
 		controller = require(controllerFile);
-		logger.debug("Controller --------------------->>>>>>>"+JSON.stringify(controller));
-
+		
 		// Invoke controller init
 		if(typeof(controller.init) === 'function') {
 			controller.init();
@@ -71,8 +70,7 @@ function initialize(controllerPath, routeDefinitionPath) {
 
 		// Populate controller cache
 		controllerMap[relativeControllerName] = controller;
-		logger.debug("Here is the relativeControllerName : : : : : : "+controllerMap[relativeControllerName]);
-
+		
 	});
 
 	//
@@ -165,9 +163,11 @@ function mountRoutes(routeConfigFile) {
 			logger.error("Skipping route. Unsupported HTTP method %s in %s.", httpMethod, JSON.stringify(routeDef));
 			continue;
 		}
-		/*var cacheEnabled = _.isEmpty(routeDef.cacheEnabled) ? false : routeDef.cacheEnabled;*/
-		var cacheEnabled = routeDef.cacheEnabled;
-		logger.debug("Cache's status : -------------------------->", cacheEnabled);
+
+		//Request Cache Information.
+		var cache = routeDef.cache;
+		
+
 		// Request handler
 		if(_.isEmpty(routeDef.handler)) {
 			logger.error("Empty 'handler' in %s. Skipping.", JSON.stringify(routeDef));
@@ -196,15 +196,9 @@ function mountRoutes(routeConfigFile) {
 			continue;
 		}
 
-		/*var details = {
-			"cacheEnabled" : cacheEnabled,
-			"requestedUrl" : routeDef.requestUri,
-			"methodName" : methodName
-		}*/
+		//Mapping Routes.
 		var key = routeUri;
-		routes[key] = {"cacheEnabled" : cacheEnabled};
-/*
-		logger.debug("Here are the details : "+JSON.stringify(details));*/
+		routes[key] = {"cache" : cache};
 
 
 

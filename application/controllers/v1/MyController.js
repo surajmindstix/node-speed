@@ -7,10 +7,11 @@ var log4js = require('log4js');
 var path = require('path');
 var util = require('util');
 var routeDetails = require('../../../framework/ControllerFactory.js');
+
+//Route Map
 var routes = routeDetails.routes;
 var cache = require("../../cacheManager.js");
-/*
-var redis_client = redis();*/
+
 
 
 
@@ -21,8 +22,8 @@ var logger = log4js.getLogger('UserController');
 
 
 // Service Dependencies
-var userService = global.app.services.getService("User");/*
-var countryService = global.app.services.getService("Country");*/
+var userService = global.app.services.getService("User");
+var countryService = global.app.services.getService("Country");
 
 
 //
@@ -76,8 +77,20 @@ function renderAllUsers(req, res, next) {
 
 }
 
+
+//
+//API :Add new Country.
 function addCountry(req, res, next){
-	userService.addCountry(req.body, function cb(result){
+
+	// Request Trace
+	logger.debug("Sign Up: Req UUID: " + req.uuid);
+	logger.debug("Sign Up: Device Type" + JSON.stringify(req.device));
+	logger.debug("Cookies: " + util.inspect(req.cookies));
+	logger.debug("Body: " + util.inspect(req.body));
+
+	// Delegate to Service
+
+	countryService.addCountry(req.body, function cb(result){
 		if(result == "success"){
 			res.send("Added Successfully");
 		}
@@ -87,12 +100,27 @@ function addCountry(req, res, next){
 	});
 }
 
+//
+//API : Get the country from DB.
 function getCountry(req, res, next){
+
+	// Request Trace
+	logger.debug("Sign Up: Req UUID: " + req.uuid);
+	logger.debug("Sign Up: Device Type" + JSON.stringify(req.device));
+	logger.debug("Cookies: " + util.inspect(req.cookies));
+	logger.debug("Body: " + util.inspect(req.body));
+
+	
 	var originalUri = req.originalUrl;
 	var key = routes[originalUri];
-	if(key.cacheEnabled == true){
-		userService.getCountry(function cb(result){
-			cache.setToCache(key, result, function cb(content){
+	var timeout = key.cache.timeout;
+	
+	//It will for this request cacheEnable is true or false.
+	if(key.cache.cacheEnabled == true){
+
+		// Delegate to Service
+		countryService.getCountry(function cb(result){
+			cache.setToCache(key, result, timeout, function cb(content){
 				logger.debug("Here is the content : "+content);
 				if(content == true){
 					res.send(result);
@@ -103,8 +131,10 @@ function getCountry(req, res, next){
 			});
 		});
 	}
+	//If CacheEnabled is false.
 	else{
-		userService.getCountry(function cb(result){
+		// Delegate to Service
+		countryService.getCountry(function cb(result){
 			if(result == "error"){
 				res.send("Unable to fetch");
 			}

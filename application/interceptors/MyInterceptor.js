@@ -7,7 +7,7 @@ var log4js = require('log4js');
 var routeDetails = require('../../framework/ControllerFactory.js');
 var cache = require('../cacheManager.js');
 
-
+//Route Map
 var routes = routeDetails.routes;
 
 
@@ -25,16 +25,17 @@ function init() {
 	logger.info("Initialize...");
 }
 
-//
-// Actual Interception Work
-//
 
-
+//
+//Interceptor for every /v1/country/* request.
+//
 
 function cacheInterception(req, res, next){
 	var originalUri = req.originalUrl;
 	var key = routes[originalUri];
-	if(key.cacheEnabled == true){
+
+	//Checks cacheEnabled option.
+	if(key.cache.cacheEnabled == true){
 		cache.getFromCache(key, function(err ,result){
 			if(result == null){
 				logger.debug("Result is null");

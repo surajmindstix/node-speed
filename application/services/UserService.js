@@ -13,7 +13,6 @@ var logger = log4js.getLogger('UserService');
 
 // Models
 var UserModel = app.db.getModel('User');
-var CountryModel = app.db.getModel('Country');
 
 //
 // Create New User
@@ -46,32 +45,9 @@ function fetchAllUsers(cb) {
 	return true;	
 }
 
-function addCountry(req, callback){
-	CountryModel.create({"countryName" : req.countryName}, function(err){
-		if(err){
-			callback(err);
-		}
-		else{
-			callback("success");
-		}
-	});
-}
-
-function getCountry(callback){
-	CountryModel.find({}, function(err, result){
-		if(!err){
-			callback(result);
-		}
-		else{
-			
-		}
-	});
-}
 
 // Interface
 module.exports = {
 	createUser: createUser,
-	fetchAllUsers: fetchAllUsers,
-	addCountry : addCountry,
-	getCountry : getCountry
+	fetchAllUsers: fetchAllUsers
 }

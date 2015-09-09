@@ -10,12 +10,19 @@
 			"httpMethod": "get",
 			"handler": "/MyController.fetchAllUsers",
 			"validatorSchema": "/fetchAllUsers",
-			"cacheEnabled" : true
+			"cache" : {
+				"cacheEnabled" : false,
+				"timeout" : 86400
+			}
 		},
 		{
 			"requestUri": "/user/buggyMethod",
 			"httpMethod": "get",
-			"handler": "/MyController.buggyMethod"
+			"handler": "/MyController.buggyMethod",
+			"cache" : {
+				"cacheEnabled" : false,
+				"timeout" : 86400
+			}
 		}
 	]
 }

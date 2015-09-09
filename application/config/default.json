@@ -18,7 +18,7 @@
 			},
 			{
 			  "type": "dateFile",
-			  "filename": "./var/default/logs/application",
+			  "filename": "/logs/application",
 			  "pattern": "-yyyy-MM-dd.log",
 			  "alwaysIncludePattern": true
 			}
@@ -31,5 +31,10 @@
 		"host": "localhost",
 		"port": 27017,
 		"name": "myapp"
+	},
+	/*Redis*/
+	"redis" : {
+		"port" : 6379,
+		"host" : "localhost"
 	}
 }

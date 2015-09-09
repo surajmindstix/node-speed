@@ -12,23 +12,34 @@
 				"cookies.asgardTheme": {
 					"presence": true
 				}
+			},
+			"cache" : {
+				"cacheEnabled" : false,
+				"timeout" : 86400
 			}			
 		},
 		{
 			"requestUri": "/user/renderAll",
 			"httpMethod": "get",
-			"handler": "/v1/MyController.renderAllUsers"
+			"handler": "/v1/MyController.renderAllUsers",
+			"cache" : {
+				"cacheEnabled" : false,
+				"timeout" : 86400
+			}
 		},
 		{
-			"requestUri" : "/user/addCountry",
+			"requestUri" : "/country/addCountry",
 			"httpMethod" : "post",
 			"handler" : "/v1/MyController.addCountry"
 		},
 		{
-			"requestUri" : "/user/getCountry",
+			"requestUri" : "/country/getCountry",
 			"httpMethod" : "get",
 			"handler" : "/v1/MyController.getCountry", 
-			"cacheEnabled" : true
+			"cache" : {
+				"cacheEnabled" : true,
+				"timeout" : 86400
+			}
 		}			
 	]
 }

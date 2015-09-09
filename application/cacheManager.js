@@ -1,3 +1,5 @@
+//
+//Dependencies
 var log4js = require('log4js'); 
 var path = require('path');
 var util = require('util');
@@ -8,13 +10,14 @@ var log4js = require('log4js');
 
 var logger = log4js.getLogger('cacheManager');
 
-var name;
-name = "Suraj";
-
 var redis_client;
 
+//Function to connect to redis server which runs on 6379 port.
 function connectClient(port, host){
+//redis_client is an instance of redis module.
 redis_client = redis.createClient(port, host);
+
+//When redis-server will connected this event will be invoked.
 redis_client.on("connect", function (err) {
   if (err) {
         logger.fatal(err);
@@ -30,10 +33,10 @@ redis_client.on("error", function (err) {
 }
 
 // Method to save in redis cache
-function setToCache(key,value, callback){
-  //console.log("Setting value in cache "+value+" with key "+key);
+function setToCache(key,value,timeout, callback){
     redis_client.set(key, value, function(err){
       if(!err){
+        setExpiry(key, timout);
         callback(true);
       }
       else{
@@ -42,8 +45,8 @@ function setToCache(key,value, callback){
     });
 };
 
+//Method to get from cache.
 function getFromCache(key, callback){
-  logger.debug("Setting value in cache with key "+key);
     redis_client.get(key, function(err, result){
       if(err && result == null){
         callback(true, null);
@@ -54,10 +57,16 @@ function getFromCache(key, callback){
     });
 };
 
+//Method to set expiry time to key.
+function setExpiry(key , timeout){
+  redis_client.expire(key, timeout);
+}
 
+
+
+//Interface
 module.exports = {
   "connectClient" : connectClient,
-  "name" : name,
   "setToCache" : setToCache,
   "getFromCache" : getFromCache
 }
