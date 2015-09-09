@@ -18,6 +18,17 @@
 			"requestUri": "/user/renderAll",
 			"httpMethod": "get",
 			"handler": "/v1/MyController.renderAllUsers"
+		},
+		{
+			"requestUri" : "/user/addCountry",
+			"httpMethod" : "post",
+			"handler" : "/v1/MyController.addCountry"
+		},
+		{
+			"requestUri" : "/user/getCountry",
+			"httpMethod" : "get",
+			"handler" : "/v1/MyController.getCountry", 
+			"cacheEnabled" : true
 		}			
 	]
 }

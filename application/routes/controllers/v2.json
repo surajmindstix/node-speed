@@ -7,7 +7,8 @@
 		{
 			"requestUri": "/user/fetchAll",
 			"httpMethod": "get",
-			"handler": "/v1/MyController.fetchAllUsers"
+			"handler": "/v1/MyController.fetchAllUsers",
+			"cacheEnabled" : true
 		}	
 	]
 }

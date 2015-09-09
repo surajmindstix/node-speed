@@ -93,9 +93,11 @@ function initialize(interceptorPath, interceptorRoutesPath) {
 //
 function mountRoutes(routeConfigFile) {
 
+	logger.debug("Here is the route congfig file"+routeConfigFile);
 	// Parse route file contents
 	var contents = fs.readFileSync(routeConfigFile);
 	var routeDefs = JSON.parse(contents);
+	logger.debug("Here is the defination"+JSON.stringify(routeDefs));
 
 	for (var i in routeDefs.interceptors) {
 
@@ -111,6 +113,7 @@ function mountRoutes(routeConfigFile) {
 
 		// Reference to target method
 		var method = interceptorMap[interceptorName][methodName];
+		logger.debug("Here is Method : "+method);
 
 		// Validate method reference before mounting
 		if(typeof(method) !== 'function') {
@@ -127,6 +130,9 @@ function mountRoutes(routeConfigFile) {
 	}
 
 }
+
+
+
 
 //
 // Fetch interceptor with specified name.

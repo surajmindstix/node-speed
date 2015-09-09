@@ -9,6 +9,7 @@ var express = require("express");
 // Logger
 var logger = log4js.getLogger('UserInterceptor');
 
+
 // Exposed Routes
 var router = express.Router();
 router.get("/user/render*", userInterceptor);
@@ -23,6 +24,10 @@ function userInterceptor(req, res, next) {
 	next();
 
 }
+
+
+
+
 
 // Interface
 module.exports = router;

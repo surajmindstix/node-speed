@@ -22,6 +22,7 @@ var logger = log4js.getLogger('ControllerFactory');
 // Cache of Controllers References
 // [/v1/MyController] => Reference to ControllerModule.function
 var controllerMap = {};
+var routes = {};
 
 // Supported HTTP methods (Add more as needed)
 var supportedMethods = ["get", "put", "post", "delete", "head"];
@@ -61,6 +62,7 @@ function initialize(controllerPath, routeDefinitionPath) {
 		// Instantiate controller module
 		logger.info("Initializing Controller: [%s] %s", relativeControllerName, controllerFile);
 		controller = require(controllerFile);
+		logger.debug("Controller --------------------->>>>>>>"+JSON.stringify(controller));
 
 		// Invoke controller init
 		if(typeof(controller.init) === 'function') {
@@ -69,6 +71,7 @@ function initialize(controllerPath, routeDefinitionPath) {
 
 		// Populate controller cache
 		controllerMap[relativeControllerName] = controller;
+		logger.debug("Here is the relativeControllerName : : : : : : "+controllerMap[relativeControllerName]);
 
 	});
 
@@ -95,6 +98,7 @@ function initialize(controllerPath, routeDefinitionPath) {
 	});
 
 }
+
 
 //
 // Mount routes based on the specified route configuration JSON.
@@ -156,11 +160,14 @@ function mountRoutes(routeConfigFile) {
 
 		// Validate HTTP method
 		var httpMethod = _.isEmpty(routeDef.httpMethod) ? "get" : routeDef.httpMethod;
+		logger.debug("Here is HTTP method of the request : "+httpMethod);
 		if(supportedMethods.indexOf(httpMethod) < 0) {
 			logger.error("Skipping route. Unsupported HTTP method %s in %s.", httpMethod, JSON.stringify(routeDef));
 			continue;
 		}
-
+		/*var cacheEnabled = _.isEmpty(routeDef.cacheEnabled) ? false : routeDef.cacheEnabled;*/
+		var cacheEnabled = routeDef.cacheEnabled;
+		logger.debug("Cache's status : -------------------------->", cacheEnabled);
 		// Request handler
 		if(_.isEmpty(routeDef.handler)) {
 			logger.error("Empty 'handler' in %s. Skipping.", JSON.stringify(routeDef));
@@ -176,8 +183,12 @@ function mountRoutes(routeConfigFile) {
 			continue;			
 		}
 
+		logger.debug("Here is controllerName : "+controllerName);
+		logger.debug("Here is methodName : "+methodName);
+
 		// Reference to target method
 		var method = controllerMap[controllerName][methodName];
+		logger.debug("Here is the Methods of Controller : "+method);
 
 		// Validate function reference before mounting
 		if(typeof(method) !== 'function') {
@@ -185,12 +196,26 @@ function mountRoutes(routeConfigFile) {
 			continue;
 		}
 
+		/*var details = {
+			"cacheEnabled" : cacheEnabled,
+			"requestedUrl" : routeDef.requestUri,
+			"methodName" : methodName
+		}*/
+		var key = routeUri;
+		routes[key] = {"cacheEnabled" : cacheEnabled};
+/*
+		logger.debug("Here are the details : "+JSON.stringify(details));*/
+
+
+
 		// Mount validator middleware at this URI
 		logger.info("Mounting Validator At: [%s] [%s]", routeUri, httpMethod);
 		var validationMiddleware = validatorFactory.getValidator(routeDef);
 		var validationRouter = express.Router();
 		validationRouter[httpMethod](routeUri, validationMiddleware);
 		global.app.use(validationRouter);
+
+		logger.debug("Here is the object of global : "+global.app.validationRouter);
  
 		// Mount the main route
 		logger.info("Mounting: [%s] [%s] %s", routeUri, httpMethod, handlerName);
@@ -222,5 +247,6 @@ function getController(controllerName) {
 //
 module.exports = {
 	initialize: initialize,
-	getController: getController
+	getController: getController,
+	routes : routes
 }

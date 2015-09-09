@@ -13,6 +13,11 @@ var uuid = require('uuid');
 var device = require("express-device");
 var fsWalk = require('fs-walk');
 var adaro = require('adaro');
+var redis = require('redis');
+var cache = require("./application/cacheManager.js");
+
+
+
 
 
 //
@@ -79,7 +84,7 @@ var controllerFactory = require('./framework/ControllerFactory');
 // Dump Environment Information
 //
 var logger = log4js.getLogger('ApplicationBootstrap');
-logger.info("Environment: %s", process.env.NODE_ENV);
+/*logger.info("Environment: %s", process.env.NODE_ENV);
 logger.info("AppRoot: %s", global.appRoot);
 logger.info("Config Base: %s", config.util.getEnv('NODE_CONFIG_DIR'));
 logger.info("Current Environment: %s", config.util.getEnv('NODE_ENV'));
@@ -88,7 +93,7 @@ logger.info("Interceptors: %s", interceptorPath);
 logger.info("Models: %s", modelPath);
 logger.info("Services: %s", servicePath);
 logger.info("Public Resources: %s", publicResourcesPath);
-
+*/
 //
 // Instantiate Express Framework
 //
@@ -116,6 +121,26 @@ app.use(cookieParser());
 // Parses the HTTP Body and populates the req.body.
 //
 app.use(bodyParser.json());
+
+
+/*var redis_client;
+
+
+redis_client = redis.createClient(6379, '127.0.0.1');
+redis_client.on("connect", function (err) {
+	if (err) {
+	      logger.fatal(err);
+	      process.exit();
+	    }
+	logger.info("Redis connected");
+});
+*/
+/*redis_client.on("error", function (err) {
+	logger.info('Redis error');
+	logger.fatal(err);
+});
+*/
+
 
 
 //
@@ -214,5 +239,6 @@ app.use(errorHandler.errorHandlingMiddleware);
 var port = config.get("server.port");
 var server = app.listen(port, function() {
 	logger.info("Listening on Port: %d", port);
+	cache.connectClient(6379, '127.0.0.1');
 });
 
