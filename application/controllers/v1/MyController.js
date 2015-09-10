@@ -10,7 +10,7 @@ var routeDetails = require('../../../framework/ControllerFactory.js');
 
 //Route Map
 var routes = routeDetails.routes;
-var cache = require("../../cacheManager.js");
+var cache = require("../../../framework/cacheManager.js");
 
 
 
