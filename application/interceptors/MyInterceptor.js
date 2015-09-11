@@ -27,6 +27,7 @@ function init() {
 
 function doit(req, res, next){
 	logger.debug("This Interceptor Invoked");
+	next();
 }
 
 

@@ -13,7 +13,7 @@ var uuid = require('uuid');
 var device = require("express-device");
 var fsWalk = require('fs-walk');
 var adaro = require('adaro');
-var cache = require("./application/cacheManager.js");
+var cache = require("./framework/cacheManager.js");
 
 
 
@@ -105,6 +105,10 @@ global.app = app;
 //
 var errorHandler = require("./framework/middleware/ErrorHandler");
 app.use(errorHandler.domainWrappingMiddleware);
+
+
+var cacheHandler = require("./framework/middleware/CacheHandler");
+app.use(cacheHandler.cacheInterception);
 
 
 //
