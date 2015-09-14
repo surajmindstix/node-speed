@@ -13,7 +13,6 @@ var uuid = require('uuid');
 var device = require("express-device");
 var fsWalk = require('fs-walk');
 var adaro = require('adaro');
-var cache = require("./framework/cacheManager.js");
 
 
 
@@ -77,6 +76,7 @@ var dbFactory = require('./framework/DBFactory');
 var serviceFactory = require('./framework/ServiceFactory');
 var interceptorFactory = require('./framework/InterceptorFactory');
 var controllerFactory = require('./framework/ControllerFactory');
+var cacheFactory = require('./framework/CacheFactory');
 
 
 //
@@ -180,6 +180,12 @@ app.db = dbFactory;
 app.db.initialize(modelPath);
 
 
+
+app.cache = cacheFactory;
+app.cache.initialize();
+
+
+
 //
 // Instantiate All Services.
 // global.app.services: Is a reference to the Service Factory.
@@ -220,18 +226,10 @@ app.use(errorHandler.errorHandlingMiddleware);
 
 
 //
-//Getting port and host of redis.
-//
-var redis_port = config.get("redis.port");
-var redis_host = config.get("redis.host");
-
-
-//
 // Bind HTTP Server
 //
 var port = config.get("server.port");
 var server = app.listen(port, function() {
 	logger.info("Listening on Port: %d", port);
-	cache.connectClient(redis_port, redis_host);
 });
 

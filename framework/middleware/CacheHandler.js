@@ -1,6 +1,6 @@
 var log4js = require('log4js'); 
 var routeDetails = require('../ControllerFactory.js');
-var cache = require('../cacheManager.js');
+var cache = require('../CacheFactory.js');
 
 //Route Map
 var routes = routeDetails.routes;
@@ -15,22 +15,35 @@ var logger = log4js.getLogger('CacheHandler');
 function cacheInterception(req, res, next){
 	var originalUri = req.originalUrl;
 	var key = routes[originalUri];
-
-	//Checks cacheEnabled option.
-	if(key.cache.cacheEnabled == true){
-		cache.getFromCache(key, function(err ,result){
-			if(result == null){
-				logger.debug("Result is null");
-				next();
+	if(req.method == "POST"){
+		next();
+	}
+	else
+	{
+		//Checks cacheEnabled option.
+		if(key == null || key == undefined || key == ""){
+			next();
+		}
+		else{
+			if(key.cache.cacheEnabled == true){
+				cache.getFromCache(originalUri, function(err ,result){
+					if(result == null){
+						next();
+					}
+					else{
+						try {
+						    res.send(result);
+		        		}
+		        		catch (error) {
+		            		res.send(error)
+		        		}
+					}
+				});
 			}
 			else{
-				logger.debug("Fetched From Cache");
-				res.send(result);
+				next();
 			}
-		});
-	}
-	else{
-		next();
+		}
 	}
 }
 
